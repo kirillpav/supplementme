@@ -22,6 +22,7 @@ struct Supplement: Identifiable {
         self.description = description
         self.dosage = dosage
         self.takenToday = false
+        self.cycleCounter = nil
     }
 }
 

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct AddSupplement: View {
+struct AddSupplementView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var viewMode: SupplementViewModel
+    @ObservedObject var viewModel: SupplementViewModel
     
     @State private var name: String = ""
     @State private var description: String = ""
@@ -44,7 +44,7 @@ struct AddSupplement: View {
     
     private func saveSupplement(){
         let newSupplement = Supplement(name: name, description: description, dosage: Int(dosage))
-        viewMode.addSupplement(supplement: newSupplement)
+        viewModel.addSupplement(supplement: newSupplement)
         dismiss()
     }
 }
