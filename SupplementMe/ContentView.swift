@@ -13,11 +13,25 @@ struct ContentView: View {
     
     
     var body: some View {
+<<<<<<< HEAD
         VStack {
+=======
+        HStack{
+            Image(systemName: "calendar")
+                .imageScale(.large)
+                .font(.title)
+            Button(action: {showingAddSupplement = true}) {
+                AddSupplement()
+            }
+        }
+        VStack {
+            TimeOfDayView()
+>>>>>>> ceb14eb (Add supplement button done)
             List {
                 ForEach(viewModel.supplements) {
                     supplement in Text(supplement.name)
                 }
+<<<<<<< HEAD
             }
             Button(action: {showingAddSupplement = true}) {
                 AddSupplement()
@@ -58,6 +72,57 @@ struct AddSupplement: View {
             }
             .padding()
         }
+=======
+            }.background(.white)
+           
+        }
+        .sheet(isPresented: $showingAddSupplement) {
+            AddSupplementView(viewModel: viewModel)
+        }
+        TabView{
+            Tab("Home", systemImage: "house"){
+                // go home
+            }
+            
+        }
+    }
+}
+
+struct TimeOfDayView: View {
+    @State private var timeOfDay: String = ""
+    
+    func determineTimeOfDay() -> String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        
+        switch hour {
+        case 5..<12:
+            return "Morning"
+        case 12..<17:
+            return "Afternoon"
+        case 17..<24:
+            return "Evening"
+        default:
+            return "Unknown"
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            Text("Good \(determineTimeOfDay())").font(.largeTitle).frame(maxWidth: .infinity, alignment: .leading).padding()
+        }
+    }
+}
+
+struct AddSupplement: View {
+
+    var body: some View {
+        VStack{
+            Image(systemName: "pills")
+                .imageScale(.large)
+                .font(.title)
+        }
+        .frame(width: 60, height: 60)
+>>>>>>> ceb14eb (Add supplement button done)
         .aspectRatio(1, contentMode: .fit)
     }
 }
