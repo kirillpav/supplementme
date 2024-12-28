@@ -13,11 +13,8 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            List {
-                ForEach(viewModel.supplements) {
-                    supplement in Text(supplement.name)
-                }
-            }
+            TimeOfDayView()
+            Spacer()
             Button(action: { showingAddSupplement = true }) {
                 AddSupplement()
             }
@@ -26,41 +23,32 @@ struct ContentView: View {
         .sheet(isPresented: $showingAddSupplement) {
             AddSupplementView(viewModel: viewModel)
         }
-        TabView {
-            Tab("Home", systemImage: "house") {
-                // go home
-            }
-
-        }
     }
 }
 
 struct AddSupplement: View {
-    var backgroundColor: Color = .blue  // Default background color
+    var backgroundColor: Color = .black  // Default background color
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 100)
                 .fill(backgroundColor)
+                .frame(height: 75)
+                .frame(width: 75)
 
-            RoundedRectangle(cornerRadius: 12)
-                .foregroundColor(backgroundColor)
-
-            VStack(spacing: 8) {
-                Image(systemName: "plus.circle")
+            HStack(spacing: 12) {
+                Image(systemName: "plus")
                     .font(.largeTitle)
                     .foregroundColor(.white)
-
-                Text("Add Semester")
-                    .font(.headline)
-                    .foregroundColor(.white)  // Corrected here
             }
-            .padding()
         }
-        .aspectRatio(1, contentMode: .fit)
+        .frame(maxWidth: .infinity, alignment: .trailing)
+        .padding(.horizontal)
+        .padding(.bottom)
     }
 }
 
+// time of day view
 struct TimeOfDayView: View {
     @State private var timeOfDay: String = ""
     func determineTimeOfDay() -> String {
@@ -79,7 +67,7 @@ struct TimeOfDayView: View {
 
     var body: some View {
         VStack {
-            Text("Good \(determineTimeOfDay())").font(.largeTitle).frame(
+            Text("Good \(determineTimeOfDay()) 'name'").font(.largeTitle).frame(
                 maxWidth: .infinity, alignment: .leading
             ).padding()
         }
