@@ -9,14 +9,23 @@ import SwiftUI
 
 @main
 struct SupplementMeApp: App {
+    @StateObject private var userManager = UserManager()
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
+
+    init() {
+        UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
+    }
 
     var body: some Scene {
         WindowGroup {
-            if hasCompletedOnboarding {
-                ContentView()
-            } else {
-                OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
+            Group {
+                if hasCompletedOnboarding {
+                    ContentView()
+                        .environmentObject(userManager)
+                } else {
+                    WelcomeView()
+                        .environmentObject(userManager)
+                }
             }
         }
     }

@@ -9,11 +9,6 @@ struct OnboardingPage: Identifiable {
 let onboardingPages: [OnboardingPage] = [
     OnboardingPage(
         id: UUID(),
-        title: "DOSE",
-        description: "Your personal supplement manager"
-    ),
-    OnboardingPage(
-        id: UUID(),
         title: "Your Age",
         description: ""
     ),

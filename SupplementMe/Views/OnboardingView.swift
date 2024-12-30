@@ -6,38 +6,88 @@ struct OnboardingView: View {
     @StateObject private var userManager = UserManager()
     @State private var currentPage = 0
     @State private var navigateToHome = false
+    @State private var showError = false
 
     @State private var age: String = ""
     @State private var weight: String = ""
     @State private var height: String = ""
+
+    private func validateInput() {
+        switch currPage {
+        case 0:
+            if !age.isEmpty {
+                currentPage += 1
+            } else {
+                showError = true
+            }
+        case 1:
+            if !weight.isEmpty {
+                currentPage += 1
+            } else {
+                showError = true
+            }
+        case 2:
+            if height.isEmpty {
+                showError = true
+            }
+        }
+    }
 
     var body: some View {
         NavigationStack {
             TabView(selection: $currentPage) {
                 ForEach(Array(onboardingPages.enumerated()), id: \.element.id) { index, page in
                     VStack {
-                        Text(page.title).font(.largeTitle)
-                        Text(page.description)
-
                         if index == 0 {
-                            SignInWithAppleButtonView(userManager: userManager)
-                                .frame(height: 50)
-                                .padding(.horizontal, 40)
-
-                            ContinueWithoutSignUpView()
-                                .padding(.horizontal, 40)
-                        }
-                        if index == 1 {
+                            Spacer()
+                            Text(page.title).font(.largeTitle)
                             TextField("Enter your age", text: $age)
                                 .textFieldStyle(WhiteBorder())
                                 .padding(.horizontal, 40)
+
+                            Spacer()
+                            Button(action: {
+                                currentPage += 1
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.black)
+                                        .frame(width: 75, height: 75)
+
+                                    Image(systemName: "arrow.right")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .padding(.horizontal, 40)
+                            .padding(.bottom, 40)
                         }
-                        if index == 2 {
+                        if index == 1 {
+                            Spacer()
+                            Text(page.title).font(.largeTitle)
                             TextField("Enter your weight", text: $weight)
                                 .textFieldStyle(WhiteBorder())
                                 .padding(.horizontal, 40)
+
+                            Spacer()
+
+                            Button(action: {
+                                currentPage += 1
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.black)
+                                        .frame(width: 75, height: 75)
+
+                                    Image(systemName: "arrow.right")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .padding(.horizontal, 40)
+                            .padding(.bottom, 40)
                         }
-                        if index == 3 {
+                        if index == 2 {
                             VStack {
                                 Spacer()
 
@@ -66,11 +116,8 @@ struct OnboardingView: View {
                             }
                         }
                     }
-                    .tag(index)
                 }
             }
-            .tabViewStyle(PageTabViewStyle())
-            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
         }
         .navigationDestination(isPresented: $navigateToHome) {
             ContentView()
@@ -91,36 +138,36 @@ struct OnboardingView: View {
     }
 }
 
-struct SignInWithAppleButtonView: View {
-    @ObservedObject var userManager: UserManager
-
-    var body: some View {
-        SignInWithAppleButton(
-            .signIn,
-            onRequest: { request in
-                request.requestedScopes = [.fullName, .email]
-            },
-            onCompletion: { result in
-                switch result {
-                case .success(let authResults):
-                    if let appleIDCredential = authResults.credential
-                        as? ASAuthorizationAppleIDCredential
-                    {
-                        let user = User(
-                            name: appleIDCredential.fullName?.givenName,
-                            email: appleIDCredential.email,
-                            hasSignedInWithApple: true
-                        )
-                        userManager.saveUser(user)
-                    }
-                case .failure(let error):
-                    print("Auth error: \(error)")
-                }
-            }
-        )
-        .signInWithAppleButtonStyle(.black)
-    }
-}
+//struct SignInWithAppleButtonView: View {
+//    @ObservedObject var userManager: UserManager
+//
+//    var body: some View {
+//        SignInWithAppleButton(
+//            .signIn,
+//            onRequest: { request in
+//                request.requestedScopes = [.fullName, .email]
+//            },
+//            onCompletion: { result in
+//                switch result {
+//                case .success(let authResults):
+//                    if let appleIDCredential = authResults.credential
+//                        as? ASAuthorizationAppleIDCredential
+//                    {
+//                        let user = User(
+//                            name: appleIDCredential.fullName?.givenName,
+//                            email: appleIDCredential.email,
+//                            hasSignedInWithApple: true
+//                        )
+//                        userManager.saveUser(user)
+//                    }
+//                case .failure(let error):
+//                    print("Auth error: \(error)")
+//                }
+//            }
+//        )
+//        .signInWithAppleButtonStyle(.black)
+//    }
+//}
 struct ContinueWithoutSignUpView: View {
     var body: some View {
         Text("Continue without sign up")
