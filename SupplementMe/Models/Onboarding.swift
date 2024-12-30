@@ -14,7 +14,17 @@ let onboardingPages: [OnboardingPage] = [
     ),
     OnboardingPage(
         id: UUID(),
-        title: "Track Your Supplements",
-        description: "Add your supplements and track your intake"
+        title: "Your Age",
+        description: ""
+    ),
+    OnboardingPage(
+        id: UUID(),
+        title: "Your Weight",
+        description: ""
+    ),
+    OnboardingPage(
+        id: UUID(),
+        title: "Your Height",
+        description: ""
     ),
 ]
