@@ -13,7 +13,7 @@ struct OnboardingView: View {
     @State private var height: String = ""
 
     private func validateInput() {
-        switch currPage {
+        switch currentPage {
         case 0:
             if !age.isEmpty {
                 currentPage += 1
@@ -30,7 +30,22 @@ struct OnboardingView: View {
             if height.isEmpty {
                 showError = true
             }
+        default:
+            break
         }
+    }
+
+    private func saveUserAndComplete() {
+        let user = User(
+            age: Int(age) ?? 0,
+            weight: Double(weight) ?? 0,
+            height: Double(height) ?? 0,
+            hasSignedInWithApple: userManager.currentUser?.hasSignedInWithApple ?? false
+        )
+
+        userManager.saveUser(user)
+        hasCompletedOnboarding = true
+        navigateToHome = true
     }
 
     var body: some View {
@@ -43,12 +58,11 @@ struct OnboardingView: View {
                             Text(page.title).font(.largeTitle)
                             TextField("Enter your age", text: $age)
                                 .textFieldStyle(WhiteBorder())
+                                .keyboardType(.numberPad)
                                 .padding(.horizontal, 40)
 
                             Spacer()
-                            Button(action: {
-                                currentPage += 1
-                            }) {
+                            Button(action: validateInput) {
                                 ZStack {
                                     Circle()
                                         .fill(Color.black)
@@ -71,9 +85,7 @@ struct OnboardingView: View {
 
                             Spacer()
 
-                            Button(action: {
-                                currentPage += 1
-                            }) {
+                            Button(action: validateInput) {
                                 ZStack {
                                     Circle()
                                         .fill(Color.black)
@@ -102,7 +114,7 @@ struct OnboardingView: View {
 
                                 Spacer()
 
-                                Button(action: saveUserAndComplete) {
+                                Button(action: validateInput) {
                                     Text("Finish Onboarding")
                                         .foregroundColor(.white)
                                         .font(.body)
@@ -119,22 +131,27 @@ struct OnboardingView: View {
                 }
             }
         }
+        .alert("Invalid Input", isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
         .navigationDestination(isPresented: $navigateToHome) {
             ContentView()
         }
     }
 
-    private func saveUserAndComplete() {
-        let user = User(
-            age: Int(age) ?? nil,
-            weight: Double(weight) ?? nil,
-            height: Double(height) ?? nil,
-            hasSignedInWithApple: userManager.currentUser?.hasSignedInWithApple ?? false
-        )
-
-        userManager.saveUser(user)
-        hasCompletedOnboarding = true
-        navigateToHome = true
+    private var errorMessage: String {
+        switch currentPage {
+        case 0:
+            return "Please enter a valid age between 1 and 120"
+        case 1:
+            return "Please enter a valid weight"
+        case 2:
+            return "Please enter a valid height"
+        default:
+            return "Invalid input"
+        }
     }
 }
 
